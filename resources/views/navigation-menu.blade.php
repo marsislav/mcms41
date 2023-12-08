@@ -18,6 +18,17 @@
                 </div>
             </div>
 
+            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('login') }}" :active="request()->routeIs('login')">
+                        {{ __('Вход') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('register') }}" :active="request()->routeIs('register')">
+                        {{ __('Регистрация') }}
+                    </x-nav-link>
+                </div>
+@auth
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <!-- Teams Dropdown -->
                 @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
@@ -123,7 +134,7 @@
                     </x-dropdown>
                 </div>
             </div>
-
+@endauth
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
@@ -143,7 +154,7 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
         </div>
-
+@auth
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="flex items-center px-4">
@@ -215,5 +226,6 @@
                 @endif
             </div>
         </div>
+        @endauth
     </div>
 </nav>
