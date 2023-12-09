@@ -37,10 +37,10 @@ class PostResource extends Resource
                             ->minLength(2),
                         Forms\Components\TextInput::make('slug')->required()
                             ->minLength(2),
-                        TiptapEditor::make('content')->profile('default')
+                        /*TiptapEditor::make('content')->profile('default')
                             ->output(TiptapOutput::Json)
                             ->maxContentWidth('5xl')
-                            ->required(),
+                            ->required(),*/
                         Forms\Components\Checkbox::make('is_published'),
                         Forms\Components\Checkbox::make('is_featured'),
                         Forms\Components\Hidden::make('user_id')
