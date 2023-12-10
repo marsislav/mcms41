@@ -2,9 +2,18 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Home;
+use App\Filament\Resources\CategoryResource;
+use App\Filament\Resources\NavigationResource;
+use App\Filament\Resources\OrderResource;
+use App\Filament\Resources\PostResource;
+use App\Filament\Resources\ProductResource;
+use App\Filament\Resources\UserResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -27,6 +36,9 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            /*->plugins([
+                \Hasnayeen\Themes\ThemesPlugin::make() TO FIX!
+            ])*/
             ->colors([
                 'primary' => Color::Cyan,
             ])
@@ -35,6 +47,23 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
+            ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+                return $builder->groups([
+                   NavigationGroup::make('Shop')->items([
+                        ...OrderResource::getNavigationItems(),
+                        ...ProductResource::getNavigationItems()
+                    ]),
+                   
+                    NavigationGroup::make('Content')->items([
+                        ...PostResource::getNavigationItems(),
+                        ...CategoryResource::getNavigationItems(),
+                        ...NavigationResource::getNavigationItems()
+                    ]),
+                    NavigationGroup::make('Users & Roles')->items([
+                        ...UserResource::getNavigationItems()
+                    ])
+                ]);
+            })
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
@@ -50,6 +79,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+               // \Hasnayeen\Themes\Http\Middleware\SetTheme::class
             ])
             ->authMiddleware([
                 Authenticate::class,

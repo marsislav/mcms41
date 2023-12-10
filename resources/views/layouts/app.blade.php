@@ -5,9 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>@yeld('title', config('app_name', 'mCMS 4.1'))</title>
-        <meta name="description" content="@yeld('meta_description')"/>
-
+        <title>@yield('title', config('app.name', 'mCMS4.1'))</title>
+        <meta name="description" content="@yield('meta_description', 'Site description')" />
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -21,12 +20,12 @@
     <body class="font-sans antialiased">
         <x-banner />
 
-        <div class="min-h-screen bg-gray-100">
-            @livewire('navigation-menu')
+        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+            <livewire:navigation/>
 
             <!-- Page Heading -->
             @if (isset($header))
-                <header class="bg-white shadow">
+                <header class="bg-white dark:bg-gray-800 shadow">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>

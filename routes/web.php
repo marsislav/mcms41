@@ -18,8 +18,9 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', HomeController::class)->name('home');
 Route::get('/articles/{post:slug}', PostController::class)->name('post.show');
+Route::get('/categories/{category:slug}', CategoryController::class)->name('category.show');
 /*Route::get('/products/{product:slug}', ProductShowController::class)->name('post.show');
-Route::get('/categories/{category:slug}', CategoryController::class)->name('category.show');*/
+*/
 
 //Route::middleware([
 //    'auth:sanctum',
