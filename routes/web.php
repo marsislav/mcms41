@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', HomeController::class)->name('home');
+Route::get('/articles/{post:slug}', PostController::class)->name('post.show');
 /*
 Route::middleware([
     'auth:sanctum',
