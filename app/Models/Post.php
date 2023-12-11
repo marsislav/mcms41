@@ -39,4 +39,9 @@ class Post extends Model implements HasMedia
     public function excerpt ():string{
         return Str::words(strip_tags($this->content), 200, '...');
     }
+
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class);
+    }
 }
