@@ -23,22 +23,36 @@ class PostResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-pencil';
 
+    protected static ?string $recordTitleAttribute = 'title';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')->required()->minLength(2),
-                Forms\Components\TextInput::make('slug')->required()->minLength(2),
-                Forms\Components\RichEditor::make('content')->required(),
-                Forms\Components\TextInput::make('meta_description')->required()->minLength(2),
-                Forms\Components\Checkbox::make('is_published'),
-                Forms\Components\Checkbox::make('is_featured'),
-                Forms\Components\Hidden::make('user_id')
-                ->dehydrateStateUsing(fn ($state) => Auth::id()),
-                Forms\Components\SpatieMediaLibraryFileUpload::make('image')->image()->optimize('webp')->imageEditor(),
-                Forms\Components\Select::make('categories')->multiple()->relationship('categories', 'title')
-
-            ]);
+                Forms\Components\Tabs::make('post')->tabs([
+                    Tab::make('Content')->schema([
+                        Forms\Components\TextInput::make('title')->required()
+                            ->minLength(2),
+                        Forms\Components\TextInput::make('slug')->required()
+                            ->minLength(2),
+                            Forms\Components\RichEditor::make('content')->required(),
+                        Forms\Components\Checkbox::make('is_published'),
+                        Forms\Components\Checkbox::make('is_featured'),
+                        Forms\Components\Hidden::make('user_id')
+                            ->dehydrateStateUsing(fn ($state) => Auth::id()),
+                        Forms\Components\Select::make('categories')
+                            ->multiple()
+                            ->relationship('categories','title')
+                    ]),
+                    Tab::make('Meta')->schema([
+                        Forms\Components\SpatieMediaLibraryFileUpload::make('image')
+                            ->image()
+                            ->optimize('webp')
+                            ->imageEditor(),
+                        Forms\Components\TextInput::make('meta_description'),
+                    ])
+                ])
+            ])->columns(1);
     }
 
     public static function table(Table $table): Table
@@ -48,14 +62,20 @@ class PostResource extends Resource
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('thumbnail'),
                 Tables\Columns\TextColumn::make('title')->searchable(),
                 Tables\Columns\TextColumn::make('slug')->searchable(),
-               // Tables\Columns\CheckboxColumn::make('is_featured'),
-                Tables\Columns\CheckboxColumn::make('is_published')
-                //Tables\Columns\TextColumn::make('categories.title')->searchable()->badge()
+                Tables\Columns\CheckboxColumn::make('is_featured'),
+                Tables\Columns\CheckboxColumn::make('is_published'),
+                Tables\Columns\TextColumn::make('categories.title')->searchable()->badge()
             ])
             ->filters([
-
-
-
+                Tables\Filters\Filter::make('is_featured')
+                    ->label('Featured')
+                    ->query(fn (Builder $query): Builder => $query->where('is_featured', true)),
+                Tables\Filters\Filter::make('is_published')
+                    ->label('Published')
+                    ->query(fn (Builder $query): Builder => $query->where('is_published', true)),
+                Tables\Filters\SelectFilter::make('categories')
+                    ->multiple()
+                    ->relationship('categories', 'title'),
                 Tables\Filters\TrashedFilter::make()
             ])
             ->actions([
@@ -65,19 +85,16 @@ class PostResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])
-            ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
-            //
+
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -85,5 +102,5 @@ class PostResource extends Resource
             'create' => Pages\CreatePost::route('/create'),
             'edit' => Pages\EditPost::route('/{record}/edit'),
         ];
-    }    
+    }
 }
